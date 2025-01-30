@@ -8,7 +8,7 @@ public class PlayerLogic : MonoBehaviour
     public bool isGrounded;
 
     [Header("General")]
-    public float GravityForce = 9.8f;
+    public float GravityForce = -9.8f;
 
     public LayerMask GroundCheckLayers = -1;
     public float GroundCheckDistance = 0.3f;
@@ -25,9 +25,13 @@ public class PlayerLogic : MonoBehaviour
 
     private CharacterController controller;
     private PlayerInputHandler inputHandler;
-    private Vector3 m_GroundNormal;
+    private Vector3 groundNormal;
     private Vector3 CharacterVelocity;
     private float cameraVerticalAngle = 0f;
+    private float lastTimeJumped = 0f;
+
+    const float JumpGroundingPreventionTime = 0.2f;
+    const float GroundCheckDistanceInAir = 0.07f;
 
     private void Start()
     {
@@ -37,24 +41,35 @@ public class PlayerLogic : MonoBehaviour
 
     private void Update()
     {
-        m_GroundNormal = Vector3.up;
         GroundCheck();
         Movement();
     }
 
     private void GroundCheck()
     {
-        Vector3 from = transform.position + (transform.up * controller.radius);
-        Vector3 to = transform.TransformDirection(Vector3.down);
+        float checkDistance =
+               isGrounded ? (controller.skinWidth + GroundCheckDistance) : GroundCheckDistanceInAir;
 
-        if (Physics.SphereCast(from, controller.radius, to, out RaycastHit hit,
-            GroundCheckDistance, GroundCheckLayers, QueryTriggerInteraction.Ignore))
+        groundNormal = Vector3.up;
+        isGrounded = false;
+
+        if (Time.time >= lastTimeJumped + JumpGroundingPreventionTime)
         {
-            isGrounded = true;
-        }
-        else
-        {
-            isGrounded = false;
+            if (Physics.CapsuleCast(GetCapsuleBottomHemisphere(), GetCapsuleTopHemisphere(controller.height),
+                controller.radius, Vector3.down, out RaycastHit hit, checkDistance, GroundCheckLayers,
+                QueryTriggerInteraction.Ignore))
+            {
+                groundNormal = hit.normal;
+
+                if (Vector3.Dot(hit.normal, transform.up) > 0f &&
+                    IsNormalUnderSlopeLimit(groundNormal))
+                {
+                    isGrounded = true;
+
+                    if (hit.distance > controller.skinWidth)
+                        controller.Move(Vector3.down * hit.distance);
+                }
+            } 
         }
     }
 
@@ -62,27 +77,24 @@ public class PlayerLogic : MonoBehaviour
     {
         CameraRotation();
 
-        Vector3 worldspaceMoveInput = transform.TransformVector(inputHandler.GetMoveInput());
-
-        if (isGrounded)
+        if (isGrounded && CharacterVelocity.y < 0)
         {
-            Vector3 targetVelocity = worldspaceMoveInput * MaxSpeed;
-            targetVelocity = GetDirectionReorientedOnSlope(targetVelocity.normalized, m_GroundNormal) *
-                                         targetVelocity.magnitude;
-
-            CharacterVelocity = Vector3.Lerp(CharacterVelocity, targetVelocity,
-                           MovementSharpnessOnGround * Time.deltaTime);
-
-            if (isGrounded && inputHandler.GetJumpInputDown())
-            {
-                CharacterVelocity = new Vector3(CharacterVelocity.x, 0f, CharacterVelocity.z);
-                CharacterVelocity += Vector3.up * JumpForce;
-            }
+            CharacterVelocity.y = 0f;
         }
-        else
+        controller.Move(transform.TransformDirection(inputHandler.GetMoveInput()) * MaxSpeed * Time.deltaTime);
+
+
+        if (isGrounded && inputHandler.GetJumpInputDown())
         {
-            CharacterVelocity += Vector3.down * GravityForce * Time.deltaTime;
+            CharacterVelocity.y += Mathf.Sqrt(JumpForce * -2f * GravityForce);
+            
+            lastTimeJumped = Time.time;
+
+            isGrounded = false;
+            groundNormal = Vector3.up;
         }
+
+        CharacterVelocity.y += GravityForce * Time.deltaTime;
 
         controller.Move(CharacterVelocity * Time.deltaTime);
     }
@@ -95,11 +107,20 @@ public class PlayerLogic : MonoBehaviour
         cameraVerticalAngle = Mathf.Clamp(cameraVerticalAngle, -89f, 89f);
         PlayerCamera.transform.localEulerAngles = new Vector3(cameraVerticalAngle, 0, 0);
     }
-
-    public Vector3 GetDirectionReorientedOnSlope(Vector3 direction, Vector3 slopeNormal)
+   
+    Vector3 GetCapsuleBottomHemisphere()
     {
-        Vector3 directionRight = Vector3.Cross(direction, transform.up);
-        return Vector3.Cross(slopeNormal, directionRight).normalized;
+        return transform.position + (transform.up * controller.radius);
+    }
+ 
+    Vector3 GetCapsuleTopHemisphere(float atHeight)
+    {
+        return transform.position + (transform.up * (atHeight - controller.radius));
+    }
+
+    bool IsNormalUnderSlopeLimit(Vector3 normal)
+    {
+        return Vector3.Angle(transform.up, normal) <= controller.slopeLimit;
     }
 
     void OnDrawGizmosSelected()
@@ -107,6 +128,6 @@ public class PlayerLogic : MonoBehaviour
         Gizmos.color = Color.red;
         Vector3 from = transform.position + (transform.up * controller.radius);
         Vector3 direction = transform.TransformDirection(Vector3.down) * GroundCheckDistance;
-        Gizmos.DrawRay(from, direction);
+        Gizmos.DrawRay(transform.position, direction);
     }
 }

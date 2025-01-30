@@ -397,13 +397,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerCamera: {fileID: 963194227}
   isGrounded: 0
-  GravityForce: 9.8
+  GravityForce: -10
   GroundCheckLayers:
     serializedVersion: 2
     m_Bits: 1
   GroundCheckDistance: 0.3
   MaxSpeed: 6
-  JumpForce: 7
+  JumpForce: 5
   MovementSharpnessOnGround: 15
   RotationSpeed: 200
 --- !u!114 &393125443
@@ -429,7 +429,7 @@ Transform:
   m_GameObject: {fileID: 393125441}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.952, y: 0, z: -1.626}
+  m_LocalPosition: {x: 1.952, y: 0.51, z: -1.626}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
