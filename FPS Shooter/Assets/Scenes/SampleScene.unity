@@ -396,12 +396,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerCamera: {fileID: 963194227}
-  GravityDownForce: 9.8
+  isGrounded: 0
+  GravityForce: 9.8
   GroundCheckLayers:
     serializedVersion: 2
     m_Bits: 1
-  MaxSpeedOnGround: 10
-  CharacterVelocity: {x: 0, y: 0, z: 0}
+  GroundCheckDistance: 0.3
+  MaxSpeed: 6
+  JumpForce: 7
+  MovementSharpnessOnGround: 15
+  RotationSpeed: 200
 --- !u!114 &393125443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -456,7 +460,7 @@ CharacterController:
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
+  m_MinMoveDistance: 0.01
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &402928998
 GameObject:

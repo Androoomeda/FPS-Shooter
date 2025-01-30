@@ -40,7 +40,6 @@ public class PlayerInputHandler : MonoBehaviour
             Vector3 move = new Vector3(Input.GetAxisRaw(GameConstants.AxisNameHorizontalMovement), 0f,
                 Input.GetAxisRaw(GameConstants.AxisNameVerticalMovement));
 
-            // constrain move input to a maximum magnitude of 1, otherwise diagonal movement might exceed the max move speed defined
             move = Vector3.ClampMagnitude(move, 1);
 
             return move;
