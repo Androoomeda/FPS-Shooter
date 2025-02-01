@@ -5,23 +5,21 @@ using UnityEngine.InputSystem.XR;
 public class PlayerLogic : MonoBehaviour
 {
     public Camera PlayerCamera;
-    public bool isGrounded;
 
     [Header("General")]
-    public float GravityForce = -9.8f;
+    [SerializeField] private float GravityForce = -9.8f;
 
-    public LayerMask GroundCheckLayers = -1;
-    public float GroundCheckDistance = 0.3f;
+    [SerializeField] private LayerMask GroundCheckLayers = -1;
+    [SerializeField] private float GroundCheckDistance = 0.3f;
 
     [Header("Movement")]
-    public float MaxSpeed = 10f;
-    public float JumpForce = 9f;
-    public float MovementSharpnessOnGround = 15;
+    [SerializeField] private float MaxSpeed = 10f;
+    [SerializeField] private float JumpForce = 9f;
 
 
     [Header("Rotation")]
     [Tooltip("Rotation speed for moving the camera")]
-    public float RotationSpeed = 200f;
+    [SerializeField] private float RotationSpeed = 200f;
 
     private CharacterController controller;
     private PlayerInputHandler inputHandler;
@@ -30,8 +28,11 @@ public class PlayerLogic : MonoBehaviour
     private float cameraVerticalAngle = 0f;
     private float lastTimeJumped = 0f;
 
+    private bool isGrounded;
+
     const float JumpGroundingPreventionTime = 0.2f;
     const float GroundCheckDistanceInAir = 0.07f;
+
 
     private void Start()
     {
@@ -125,9 +126,12 @@ public class PlayerLogic : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.red;
-        Vector3 from = transform.position + (transform.up * controller.radius);
-        Vector3 direction = transform.TransformDirection(Vector3.down) * GroundCheckDistance;
-        Gizmos.DrawRay(transform.position, direction);
+        if (Application.isPlaying)
+        {
+            Gizmos.color = Color.red;
+            Vector3 from = transform.position + (transform.up * controller.radius);
+            Vector3 direction = transform.TransformDirection(Vector3.down) * GroundCheckDistance;
+            Gizmos.DrawRay(transform.position, direction);
+        }
     }
 }

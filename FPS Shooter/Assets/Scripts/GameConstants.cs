@@ -6,7 +6,7 @@
     public const string MouseAxisNameHorizontal = "Mouse X";
 
     public const string k_ButtonNameAim = "Aim";
-    public const string k_ButtonNameFire = "Fire1";
+    public const string k_ButtonNameFire = "Fire";
     public const string k_ButtonNameJump = "Jump";
 
     public const string k_ButtonNameSwitchWeapon = "Mouse ScrollWheel";
