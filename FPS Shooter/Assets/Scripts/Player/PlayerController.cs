@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
-public class PlayerLogic : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public Camera PlayerCamera;
 

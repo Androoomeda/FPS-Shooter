@@ -8,7 +8,7 @@ public class Projectile : ProjectileBase
     [SerializeField] private float MaxLifeTime = 2f;
     [SerializeField] private float Radius = 0.01f;
     [SerializeField] private float Speed = 20f;
-    [SerializeField] private float Damage = 40f;
+    [SerializeField] private int Damage = 40;
     [SerializeField] private float TrajectoryCorrectionDistance = -1;
     [SerializeField] private LayerMask HittableLayers = -1;
 
@@ -89,7 +89,7 @@ public class Projectile : ProjectileBase
 
     private bool IsHitValid(Collider hit)
     {
-        if (hit.isTrigger && hit.GetComponent<Damageable>() == null)
+        if (hit.isTrigger && hit.GetComponent<Health>() == null)
             return false;
 
         if (ignoredColliders != null && ignoredColliders.Contains(hit))
@@ -100,7 +100,11 @@ public class Projectile : ProjectileBase
 
     private void OnHit(Collider collider)
     {
-        //TODO: ������� ��� �����
+        Health health = collider.GetComponent<Health>();
+        
+        if(health)
+            health.TakeDamage(Damage);
+
         Destroy(this.gameObject);
     }
 

@@ -101,7 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxLifeTime: 2
   Radius: 0.04
-  Speed: 1
+  Speed: 15
   Damage: 2
   TrajectoryCorrectionDistance: 5
   HittableLayers:

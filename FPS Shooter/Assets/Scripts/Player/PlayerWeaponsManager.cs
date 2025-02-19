@@ -18,13 +18,13 @@ public class PlayerWeaponsManager : MonoBehaviour
     public bool IsAiming { get; private set; }
 
     private PlayerInputHandler playerInput;
-    private PlayerLogic playerLogic;
+    private PlayerController playerLogic;
     private float DefaultFov = 60f;
 
     private void Start()
     {
         playerInput = GetComponent<PlayerInputHandler>();
-        playerLogic = GetComponent<PlayerLogic>();
+        playerLogic = GetComponent<PlayerController>();
 
         weapon.Owner = gameObject;
 

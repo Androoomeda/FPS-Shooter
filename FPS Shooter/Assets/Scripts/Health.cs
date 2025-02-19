@@ -1,26 +1,36 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Health : MonoBehaviour
 {
     public int MaxHealth;
+    public int CurrentHealth;
+    public UnityAction OnDie;
 
-    public int GetCurrentHealth() => currentHealth;
+    public float GetRatio() => (float)CurrentHealth / MaxHealth;
 
-    public Action OnDie { get; internal set; }
-
-    public int currentHealth;
+    private bool isDead;
 
     void Start()
     {
-        currentHealth = MaxHealth;
+        CurrentHealth = MaxHealth;
     }
 
     public void TakeDamage(int damage)
     {
-        currentHealth -= damage;
+        CurrentHealth -= damage;
+        CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
 
-        if (currentHealth <= 0)
-            OnDie.Invoke();
+        HandleDeath();
+    }
+
+    private void HandleDeath()
+    {
+        if (CurrentHealth <= 0)
+        {
+            isDead = true;
+            OnDie?.Invoke();
+        }
     }
 }
