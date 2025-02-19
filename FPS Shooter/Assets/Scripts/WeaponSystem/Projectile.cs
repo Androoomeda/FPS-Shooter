@@ -9,8 +9,13 @@ public class Projectile : ProjectileBase
     [SerializeField] private float Radius = 0.01f;
     [SerializeField] private float Speed = 20f;
     [SerializeField] private float Damage = 40f;
+    [SerializeField] private float TrajectoryCorrectionDistance = -1;
     [SerializeField] private LayerMask HittableLayers = -1;
 
+    Vector3 lastPosition;
+    bool hasTrajectoryOverride;
+    Vector3 trajectoryCorrectionVector;
+    Vector3 consumedTrajectoryCorrectionVector;
     private Vector3 velocity;
     private ProjectileBase projectileBase;
     private List<Collider> ignoredColliders;
@@ -27,15 +32,38 @@ public class Projectile : ProjectileBase
     new void OnShoot()
     {
         velocity = transform.forward * Speed;
+        lastPosition = transform.position;
         ignoredColliders = new List<Collider>();
 
         Collider[] ownerColliders = projectileBase.Owner.GetComponentsInChildren<Collider>();
         ignoredColliders.AddRange(ownerColliders);
+
+        hasTrajectoryOverride = true;
+        Vector3 cameraToMuzzle = InitialPosition -
+                                          Camera.main.transform.position;
+        trajectoryCorrectionVector = Vector3.ProjectOnPlane(-cameraToMuzzle,
+                    Camera.main.transform.forward);
     }
 
     private void Update()
     {
         transform.position += velocity * Time.deltaTime;
+
+        if(hasTrajectoryOverride && consumedTrajectoryCorrectionVector.sqrMagnitude <
+        trajectoryCorrectionVector.sqrMagnitude)
+        {
+            Vector3 correctionLeft = trajectoryCorrectionVector - consumedTrajectoryCorrectionVector;
+            float distanceThisFrame = (transform.position - lastPosition).magnitude;
+            Vector3 correctionThisFrame = distanceThisFrame / TrajectoryCorrectionDistance * trajectoryCorrectionVector;
+            correctionThisFrame = Vector3.ClampMagnitude(correctionThisFrame, correctionLeft.magnitude);
+
+            consumedTrajectoryCorrectionVector += correctionThisFrame;
+
+            if (consumedTrajectoryCorrectionVector.sqrMagnitude == trajectoryCorrectionVector.sqrMagnitude)
+                    hasTrajectoryOverride = false;
+
+                transform.position += correctionThisFrame;
+        }
 
         Collider closestHit = new Collider();
         bool foundHit = false;
@@ -55,6 +83,8 @@ public class Projectile : ProjectileBase
         {
             OnHit(closestHit);
         }
+
+        lastPosition = transform.position;
     }
 
     private bool IsHitValid(Collider hit)
@@ -63,14 +93,14 @@ public class Projectile : ProjectileBase
             return false;
 
         if (ignoredColliders != null && ignoredColliders.Contains(hit))
-            return false;  
+            return false;
 
         return true;
     }
 
     private void OnHit(Collider collider)
     {
-        //TODO: сделать рег урона
+        //TODO: пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         Destroy(this.gameObject);
     }
 

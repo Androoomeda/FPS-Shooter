@@ -99,10 +99,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7730552964909e546a99a5e01b9dd6a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hasCorrection: 1
   MaxLifeTime: 3
   Radius: 0.1
   Speed: 10
   Damage: 6
+  TrajectoryCorrectionDistance: 5
   HittableLayers:
     serializedVersion: 2
     m_Bits: 4294967295

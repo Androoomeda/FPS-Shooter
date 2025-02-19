@@ -103,6 +103,7 @@ MonoBehaviour:
   Radius: 0.04
   Speed: 1
   Damage: 2
+  TrajectoryCorrectionDistance: 5
   HittableLayers:
     serializedVersion: 2
     m_Bits: 4294967295
