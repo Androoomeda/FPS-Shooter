@@ -1,24 +1,20 @@
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 
 public class PlayerController : MonoBehaviour
 {
-    public Camera PlayerCamera;
-
     [Header("General")]
-    [SerializeField] private float GravityForce = -9.8f;
+    public Camera PlayerCamera;
+    public Transform AimPoint;
 
     [SerializeField] private LayerMask GroundCheckLayers = -1;
     [SerializeField] private float GroundCheckDistance = 0.3f;
 
     [Header("Movement")]
+    [SerializeField] private float GravityForce = -9.8f;
     [SerializeField] private float MaxSpeed = 10f;
     [SerializeField] private float JumpForce = 9f;
 
-
     [Header("Rotation")]
-    [Tooltip("Rotation speed for moving the camera")]
     [SerializeField] private float RotationSpeed = 200f;
 
     private CharacterController controller;
