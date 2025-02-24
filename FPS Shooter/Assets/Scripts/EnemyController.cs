@@ -11,7 +11,8 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float OrientationSpeed = 10f;
     [SerializeField] private float DetectionRadius = 10f;
     [SerializeField] private float AttackStopDistance = 5f;
-    [SerializeField] private float 
+    [Tooltip("Stop time, when enemy reached the node")] 
+    [SerializeField] private float StopTime = 2f;
 
     private Health health;
     private NavMeshAgent agent;
@@ -20,6 +21,8 @@ public class EnemyController : MonoBehaviour
     private Collider[] selfColliders;
     private Vector3 targetNodePosition;
     private int currentNodeIndex = 0;
+    private float arrivalTimeThePoint;
+    private bool isArrival;
     void Start()
     {
         playerAimPoint = FindFirstObjectByType<PlayerController>().AimPoint;
@@ -59,8 +62,17 @@ public class EnemyController : MonoBehaviour
         if (agent.destination != targetNodePosition)
             agent.destination = targetNodePosition;
 
-        if ((targetNodePosition - transform.position).magnitude < 2f)
-            SetNextNode();
+        if ((targetNodePosition - transform.position).magnitude < 2f )
+        {
+            if(!isArrival)
+            {
+                arrivalTimeThePoint = Time.time;
+                isArrival = true;
+            }
+
+            if(arrivalTimeThePoint + StopTime < Time.time)
+                SetNextNode();
+        }
     }
 
     private void OrientTowards(Vector3 lookPosition)
@@ -76,6 +88,7 @@ public class EnemyController : MonoBehaviour
         agent.destination = targetNodePosition;
 
         currentNodeIndex++;
+        isArrival = false;
 
         if (currentNodeIndex >= PathNodes.Count)
             currentNodeIndex = 0;
