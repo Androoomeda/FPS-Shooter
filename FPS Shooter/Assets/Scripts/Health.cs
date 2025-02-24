@@ -5,29 +5,29 @@ using UnityEngine.Events;
 public class Health : MonoBehaviour
 {
     public int MaxHealth;
-    public int CurrentHealth;
     public UnityAction OnDie;
 
-    public float GetRatio() => (float)CurrentHealth / MaxHealth;
+    public float GetRatio() => (float)currentHealth / MaxHealth;
 
     private bool isDead;
+    private int currentHealth;
 
     void Start()
     {
-        CurrentHealth = MaxHealth;
+        currentHealth = MaxHealth;
     }
 
     public void TakeDamage(int damage)
     {
-        CurrentHealth -= damage;
-        CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, MaxHealth);
 
         HandleDeath();
     }
 
     private void HandleDeath()
     {
-        if (CurrentHealth <= 0)
+        if (currentHealth <= 0)
         {
             isDead = true;
             OnDie?.Invoke();
