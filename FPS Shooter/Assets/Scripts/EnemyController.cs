@@ -100,7 +100,6 @@ public class EnemyController : MonoBehaviour
         if (Physics.Raycast(transform.position, directionToPlayer, out RaycastHit hit, 
             DetectionRadius, -1, QueryTriggerInteraction.Ignore))
         {
-            Debug.Log(hit.collider);
             if (!selfColliders.Contains(hit.collider) && hit.collider.gameObject.GetComponent<PlayerController>())
                 return true;
             else

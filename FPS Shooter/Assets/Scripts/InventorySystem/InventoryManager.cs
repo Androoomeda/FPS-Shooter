@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -8,6 +9,11 @@ public class InventoryManager : MonoBehaviour
 
     [SerializeField] private InventorySlot[] InventorySlots;
     [SerializeField] private GameObject InventoryItemPrefab;
+    [SerializeField] private CanvasGroup InventoryGroup;
+    [SerializeField] private GameObject Player;
+
+    private PlayerInputHandler playerInput;
+    private bool isInventoryOpen;
 
     void Awake()
     {
@@ -15,6 +21,27 @@ public class InventoryManager : MonoBehaviour
             InventoryManager.Instance = this;
         else
             Destroy(gameObject);
+
+        playerInput = Player.GetComponent<PlayerInputHandler>();
+        
+        isInventoryOpen = false;
+        ToogleInventoryPanel();
+    }
+
+    void Update()
+    {
+        if(playerInput.GetInventoryButtonDown())
+        {
+            isInventoryOpen = !isInventoryOpen;
+            ToogleInventoryPanel();
+        }
+    }
+
+    private void ToogleInventoryPanel()
+    {
+        InventoryGroup.alpha = isInventoryOpen ? 1 : 0;
+        Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = isInventoryOpen;
     }
 
     public bool AddItem(Item item)
@@ -33,10 +60,10 @@ public class InventoryManager : MonoBehaviour
         return false;
     }
 
-    void SpawnNewItem(Item item, InventorySlot slot)
+    private void SpawnNewItem(Item item, InventorySlot slot)
     {
         GameObject newItem = Instantiate(InventoryItemPrefab, slot.transform);
         InventoryItem inventoryItem = newItem.GetComponent<InventoryItem>();
-        inventoryItem.InitializeItem(item);
+        inventoryItem.InitializeItem(item, Player);
     }
 }

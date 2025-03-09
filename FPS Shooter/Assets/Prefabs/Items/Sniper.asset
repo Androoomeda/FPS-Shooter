@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 316bb9ee905e66f4892dea326d773f20, type: 3}
   m_Name: Sniper
   m_EditorClassIdentifier: 
-  Tile: {fileID: 0}
-  Type: 0
   Sprite: {fileID: 21300000, guid: aa9657dccf0fbc248a82a542d9ae1dad, type: 3}
+  IsStackable: 0
+  Type: 0
+  WeaponPrefab: {fileID: 1525956778601118477, guid: 7bd94c7dd9647c94ba80aca410053112, type: 3}
+  HealAmount: 0
+  AmmoCount: 0

@@ -420,6 +420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e47da1f933fc66a40890362aac2a1884, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Item: {fileID: 11400000, guid: 852e62a5b2ba13841b048f995daa9abe, type: 2}
   MaxAmmo: 8
   DelayBetweenShots: 0.2
   ReloadTime: 2

@@ -1,5 +1,6 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(PlayerInputHandler))]
 public class PlayerWeaponsManager : MonoBehaviour
@@ -65,5 +66,17 @@ public class PlayerWeaponsManager : MonoBehaviour
     public void SetFov(float fov)
     {
         playerLogic.PlayerCamera.fieldOfView = fov;
+    }
+
+    public void SwitchWeapon(WeaponController weaponPrefab)
+    {
+        GameObject newWeapon = Instantiate(weaponPrefab.gameObject, 
+            DefaultWeaponPosition.position, WeaponParentSocket.rotation, WeaponParentSocket);
+
+        InventoryManager.Instance.AddItem(weapon.Item);
+        Destroy(weapon.gameObject);
+
+        weapon = newWeapon.GetComponent<WeaponController>();
+        weapon.Owner = gameObject;
     }
 }

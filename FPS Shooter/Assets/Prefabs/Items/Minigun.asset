@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 316bb9ee905e66f4892dea326d773f20, type: 3}
   m_Name: Minigun
   m_EditorClassIdentifier: 
-  Tile: {fileID: 0}
-  Type: 0
   Sprite: {fileID: 0}
+  IsStackable: 0
+  Type: 0
+  WeaponPrefab: {fileID: 1525956778601118477, guid: 1eb8b1e305915c047b68b54e7247a8a0, type: 3}
+  HealAmount: 0
+  AmmoCount: 0

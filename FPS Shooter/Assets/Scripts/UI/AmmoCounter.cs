@@ -16,6 +16,8 @@ public class AmmoCounter : MonoBehaviour
 
     void Update()
     {
+        weapon = playerWeaponsManager.weapon;
+
         AmmoFillImage.fillAmount = (float)weapon.GetCurrentAmmo() / weapon.MaxAmmo;
 
         if(weapon.GetCurrentAmmo() <= 0)

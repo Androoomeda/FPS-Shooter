@@ -2,23 +2,24 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     [HideInInspector] public Item Item;
     [HideInInspector] public Transform parent;
 
     private Image image;
+    private GameObject player;
 
-    private void Start()
+    private void OnEnable()
     {
         image = GetComponent<Image>();
-        InitializeItem(Item);
     }
 
-    public void InitializeItem(Item newItem)
+    public void InitializeItem(Item newItem, GameObject player)
     {
         Item = newItem;
         image.sprite = newItem.Sprite;
+        this.player = player;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -38,4 +39,20 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         image.raycastTarget = true;
         transform.SetParent(parent);
     }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        switch(Item.Type)
+        {
+            case ItemType.Weapon:
+                player.GetComponent<PlayerWeaponsManager>().SwitchWeapon(Item.WeaponPrefab);
+                break;
+            case ItemType.Medkit:
+                player.GetComponent<Health>().Heal(Item.HealAmount);
+                break;
+        }
+
+        Destroy(gameObject);
+    }
+
 }

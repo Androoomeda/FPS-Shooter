@@ -10,14 +10,12 @@ public class PlayerInputHandler : MonoBehaviour
     [Tooltip("Limit to consider an input when using a trigger on a controller")]
     public float TriggerAxisThreshold = 0.4f;
 
-    //GameFlowManager m_GameFlowManager;
-    bool m_FireInputWasHeld;
-
-    private GameManager m_GameFlowManager;
+    private bool fireInputWasHeld;
+    private GameManager gameManager;
 
     void Start()
     {
-        m_GameFlowManager = FindFirstObjectByType<GameManager>();
+        gameManager = FindFirstObjectByType<GameManager>();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -25,12 +23,12 @@ public class PlayerInputHandler : MonoBehaviour
 
     void LateUpdate()
     {
-        m_FireInputWasHeld = GetFireInputHeld();
+        fireInputWasHeld = GetFireInputHeld();
     }
 
     public bool CanProcessInput()
     {
-        return Cursor.lockState == CursorLockMode.Locked && !m_GameFlowManager.GameIsEnding;
+        return Cursor.lockState == CursorLockMode.Locked && !gameManager.GameIsEnding;
     }
 
     public Vector3 GetMoveInput()
@@ -67,7 +65,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool GetJumpInputDown()
     {
         if (CanProcessInput())
-            return Input.GetButtonDown(GameConstants.k_ButtonNameJump);
+            return Input.GetButtonDown(GameConstants.ButtonNameJump);
 
         return false;
     }
@@ -76,7 +74,7 @@ public class PlayerInputHandler : MonoBehaviour
     {
         if (CanProcessInput())
         {
-            return Input.GetButton(GameConstants.k_ButtonNameJump);
+            return Input.GetButton(GameConstants.ButtonNameJump);
         }
 
         return false;
@@ -84,18 +82,18 @@ public class PlayerInputHandler : MonoBehaviour
 
     public bool GetFireInputDown()
     {
-        return GetFireInputHeld() && !m_FireInputWasHeld;
+        return GetFireInputHeld() && !fireInputWasHeld;
     }
 
     public bool GetFireInputReleased()
     {
-        return !GetFireInputHeld() && m_FireInputWasHeld;
+        return !GetFireInputHeld() && fireInputWasHeld;
     }
 
     public bool GetFireInputHeld()
     {
         if (CanProcessInput())
-            return Input.GetButton(GameConstants.k_ButtonNameFire);
+            return Input.GetButton(GameConstants.ButtonNameFire);
 
         return false;
     }
@@ -103,7 +101,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool GetAimInputHeld()
     {
         if (CanProcessInput())
-            return Input.GetButton(GameConstants.k_ButtonNameAim);
+            return Input.GetButton(GameConstants.ButtonNameAim);
 
         return false;
     }
@@ -116,8 +114,8 @@ public class PlayerInputHandler : MonoBehaviour
         return false;
     }
 
-    internal int GetSwitchWeaponInput()
+    public bool GetInventoryButtonDown()
     {
-        throw new NotImplementedException();
+        return Input.GetButtonDown(GameConstants.ButtonNameInventory);
     }
 }

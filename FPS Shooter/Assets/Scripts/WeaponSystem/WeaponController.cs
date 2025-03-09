@@ -5,16 +5,18 @@ using UnityEngine.Events;
 
 public class WeaponController : MonoBehaviour
 {
+    public Item Item;
     public int MaxAmmo = 8;
+
     [Tooltip("Задержка между выстрелами")]
     public float DelayBetweenShots = 0.2f;
     public float ReloadTime = 2f;
     public ProjectileBase ProjectilePrefab;
     public Transform WeaponMuzzle;
     public float BulletSpreadAngle = 0f;
+
     [Tooltip("Коэффицент зума во время прицеливания")] [Range(0f, 1f)]
     public float AimZoomRatio = 1f;
-    public UnityAction OnShoot;
     public GameObject Owner { get; set; }
     public int GetCurrentAmmo() => currentAmmo;
     public float GetRealoadingProgress() => (Time.time - lastTimeShot) / ReloadTime;
@@ -56,7 +58,6 @@ public class WeaponController : MonoBehaviour
         {
             currentAmmo = MaxAmmo;
             isReloading = false;
-            Debug.Log("Weapon is reload");
         }
     }
 
@@ -81,8 +82,6 @@ public class WeaponController : MonoBehaviour
         newProjectile.Shoot(this);
 
         lastTimeShot = Time.time;
-
-        OnShoot?.Invoke();
     }
 
     public Vector3 GetShotDirectionWithinSpread(Transform shootTransform)

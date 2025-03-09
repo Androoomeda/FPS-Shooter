@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 316bb9ee905e66f4892dea326d773f20, type: 3}
   m_Name: Ammo
   m_EditorClassIdentifier: 
-  Tile: {fileID: 0}
-  Type: 1
   Sprite: {fileID: 21300000, guid: 019de29933e7a6845b292baffb9e9057, type: 3}
+  IsStackable: 1
+  Type: 1
+  WeaponPrefab: {fileID: 0}
+  HealAmount: 0
+  AmmoCount: 0

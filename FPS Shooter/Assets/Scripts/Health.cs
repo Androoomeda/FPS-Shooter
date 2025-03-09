@@ -25,6 +25,12 @@ public class Health : MonoBehaviour
         HandleDeath();
     }
 
+    public void Heal(int healAmount)
+    {
+        currentHealth += healAmount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, MaxHealth);
+    }
+
     private void HandleDeath()
     {
         if (currentHealth <= 0)
