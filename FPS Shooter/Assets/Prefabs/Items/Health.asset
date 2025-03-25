@@ -17,4 +17,5 @@ MonoBehaviour:
   Type: 2
   WeaponPrefab: {fileID: 0}
   HealAmount: 25
-  AmmoCount: 0
+  MaxCount: 0
+  Count: 0

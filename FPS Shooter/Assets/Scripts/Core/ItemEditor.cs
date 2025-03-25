@@ -9,7 +9,7 @@ public class ItemEditor : Editor
     SerializedProperty Type;
     SerializedProperty WeaponPrefab;
     SerializedProperty HealAmount;
-    SerializedProperty AmmoCount;
+    SerializedProperty MaxCount;
     #endregion
 
     void OnEnable()
@@ -19,7 +19,7 @@ public class ItemEditor : Editor
         Type = serializedObject.FindProperty("Type");
         WeaponPrefab = serializedObject.FindProperty("WeaponPrefab");
         HealAmount = serializedObject.FindProperty("HealAmount");
-        AmmoCount = serializedObject.FindProperty("AmmoCount");
+        MaxCount = serializedObject.FindProperty("MaxCount");
     }
 
     public override void OnInspectorGUI()
@@ -34,8 +34,9 @@ public class ItemEditor : Editor
             EditorGUILayout.PropertyField(WeaponPrefab);
         else if(item.Type == ItemType.Medkit)
             EditorGUILayout.PropertyField(HealAmount);
-        else if(item.Type == ItemType.Ammo)
-            EditorGUILayout.PropertyField(AmmoCount);
+
+        if(item.IsStackable)
+            EditorGUILayout.PropertyField(MaxCount);
 
         if(serializedObject.hasModifiedProperties)
             serializedObject.ApplyModifiedProperties();

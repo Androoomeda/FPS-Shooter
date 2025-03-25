@@ -1,9 +1,11 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class AmmoCounter : MonoBehaviour
 {
-    [SerializeField] private Image AmmoFillImage;
+    [SerializeField] private TextMeshProUGUI CountText;
+    [SerializeField] private Image ReloadFillImage;
 
     private PlayerWeaponsManager playerWeaponsManager;
     private WeaponController weapon;
@@ -12,15 +14,22 @@ public class AmmoCounter : MonoBehaviour
     {
         playerWeaponsManager = FindFirstObjectByType<PlayerWeaponsManager>();
         weapon = playerWeaponsManager.weapon;
+        ReloadFillImage.fillAmount = 0f;
     }
 
     void Update()
     {
         weapon = playerWeaponsManager.weapon;
+        CountText.text = $"{weapon.GetCurrentAmmo()}/{InventoryManager.Instance.AmmoAmount}";
 
-        AmmoFillImage.fillAmount = (float)weapon.GetCurrentAmmo() / weapon.MaxAmmo;
+        UpdateReloadingBar();
+    }
 
-        if(weapon.GetCurrentAmmo() <= 0)
-            AmmoFillImage.fillAmount = weapon.GetRealoadingProgress();
+    private void UpdateReloadingBar()
+    {
+        if(weapon.IsReloading)
+            ReloadFillImage.fillAmount = weapon.GetRealoadingProgress();
+        else
+            ReloadFillImage.fillAmount = 0f;
     }
 }

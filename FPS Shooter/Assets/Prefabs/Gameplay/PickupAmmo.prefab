@@ -180,6 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9646816e9e3f4c45b122c22c7a36ff9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Count: 10
   Item: {fileID: 11400000, guid: 947c54232c4dce5428422c8b6c140835, type: 2}
   VerticalBobFrequency: 1
   BobbingAmount: 0.5

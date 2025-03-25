@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 [System.Serializable]
 [CreateAssetMenu(fileName = "New Item", menuName = "Scriptable object/Item")]
@@ -10,7 +9,7 @@ public class Item : ScriptableObject
     public ItemType Type;
     public WeaponController WeaponPrefab;
     public int HealAmount;
-    public int AmmoCount;
+    public int MaxCount;
 }
 
 public enum ItemType

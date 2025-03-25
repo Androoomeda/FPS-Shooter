@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Pickup : MonoBehaviour
 {
+    [SerializeField] private int Count = 1;
     [SerializeField] private Item Item;
     [SerializeField] private float VerticalBobFrequency = 1f;
     [SerializeField] private float BobbingAmount = 1f;
@@ -14,7 +15,7 @@ public class Pickup : MonoBehaviour
     private Collider collider;
     private Vector3 startPosition;
 
-    protected virtual void Start()
+    void Start()
     {
         Rigidbody = GetComponent<Rigidbody>();
         collider = GetComponent<Collider>();
@@ -39,9 +40,9 @@ public class Pickup : MonoBehaviour
             OnPicked();
     }
 
-    protected virtual void OnPicked()
+    private void OnPicked()
     {
-        InventoryManager.Instance.AddItem(Item);
+        InventoryManager.Instance.AddItem(Item, Count);
         Destroy(gameObject);
     }
 }

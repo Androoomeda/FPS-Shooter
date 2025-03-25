@@ -23,7 +23,7 @@ public class EnemyController : MonoBehaviour
     private int currentNodeIndex = 0;
     private float arrivalTimeThePoint;
     private bool isArrival;
-    void Start()
+    void Awake()
     {
         playerAimPoint = FindFirstObjectByType<PlayerController>().AimPoint;
         selfColliders = GetComponentsInChildren<Collider>();

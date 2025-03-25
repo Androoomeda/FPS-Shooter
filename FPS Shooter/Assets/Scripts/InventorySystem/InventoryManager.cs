@@ -1,11 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using System.Linq;
 
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance;
+
+    public int AmmoAmount {get; private set;}
 
     [SerializeField] private InventorySlot[] InventorySlots;
     [SerializeField] private GameObject InventoryItemPrefab;
@@ -14,6 +15,8 @@ public class InventoryManager : MonoBehaviour
 
     private PlayerInputHandler playerInput;
     private bool isInventoryOpen;
+    private Item newItem;
+    private Dictionary<InventorySlot, InventoryItem> ItemsInSlots;
 
     void Awake()
     {
@@ -23,7 +26,10 @@ public class InventoryManager : MonoBehaviour
             Destroy(gameObject);
 
         playerInput = Player.GetComponent<PlayerInputHandler>();
-        
+
+        ItemsInSlots = InventorySlots
+            .ToDictionary(slot => slot, key => (InventoryItem)null);
+
         isInventoryOpen = false;
         ToogleInventoryPanel();
     }
@@ -44,15 +50,33 @@ public class InventoryManager : MonoBehaviour
         Cursor.visible = isInventoryOpen;
     }
 
-    public bool AddItem(Item item)
+    public bool AddItem(Item item, int count)
     {
-        for(int i = 0; i < InventorySlots.Length; i++)
+        newItem = item;
+
+        foreach(var slot in ItemsInSlots.Keys)
         {
-            InventorySlot slot = InventorySlots[i];
+            InventoryItem itemInSlot = slot.GetComponentInChildren<InventoryItem>(); 
+            if(itemInSlot != null && itemInSlot.Item == newItem && 
+            itemInSlot.Count < itemInSlot.Item.MaxCount)
+            {
+                itemInSlot.Count += count;
+                itemInSlot.UpdateCount();
+
+                SaveAmmoAmount(count);
+
+                return true;
+            }
+        }
+
+        
+        foreach(var slot in ItemsInSlots.Keys)
+        {
             InventoryItem itemInSlot = slot.GetComponentInChildren<InventoryItem>(); 
             if(itemInSlot == null)
             {
-                SpawnNewItem(item, slot);
+                SpawnNewItem(count, slot);
+                SaveAmmoAmount(count);
                 return true;
             }
         }
@@ -60,10 +84,36 @@ public class InventoryManager : MonoBehaviour
         return false;
     }
 
-    private void SpawnNewItem(Item item, InventorySlot slot)
+    public void TakeAmmo(int ammoToTake)
     {
-        GameObject newItem = Instantiate(InventoryItemPrefab, slot.transform);
-        InventoryItem inventoryItem = newItem.GetComponent<InventoryItem>();
-        inventoryItem.InitializeItem(item, Player);
+        foreach(var item in ItemsInSlots.Values)
+        {
+            if(item.Item.Type == ItemType.Ammo)
+            {
+                if(item.Count < ammoToTake)
+                {
+                    ammoToTake -= item.Count;
+                    Destroy(item);
+                }
+
+                if(ammoToTake > 0)
+                    break;
+            }
+        }
+        AmmoAmount -= ammoToTake;
+    }
+
+    private void SpawnNewItem(int count, InventorySlot slot)
+    {
+        GameObject newInventoryItem = Instantiate(InventoryItemPrefab, slot.transform);
+        InventoryItem inventoryItem = newInventoryItem.GetComponent<InventoryItem>();
+        ItemsInSlots[slot] = inventoryItem;
+        inventoryItem.InitializeItem(newItem, count, Player);
+    }
+
+    private void SaveAmmoAmount(int count)
+    {
+        if(newItem.Type == ItemType.Ammo)
+            AmmoAmount += count;
     }
 }

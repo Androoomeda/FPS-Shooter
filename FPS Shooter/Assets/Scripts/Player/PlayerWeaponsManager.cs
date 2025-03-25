@@ -22,7 +22,7 @@ public class PlayerWeaponsManager : MonoBehaviour
     private PlayerController playerLogic;
     private float DefaultFov = 60f;
 
-    private void Start()
+    private void Awake()
     {
         playerInput = GetComponent<PlayerInputHandler>();
         playerLogic = GetComponent<PlayerController>();
@@ -37,8 +37,10 @@ public class PlayerWeaponsManager : MonoBehaviour
         weapon.HandleShootInput(playerInput.GetFireInputDown(), playerInput.GetFireInputHeld());
         UpdateWeaponAiming(playerInput.GetAimInputHeld());
 
-        if (playerInput.GetReloadButtonDown())
+        if (playerInput.GetReloadButtonDown() && weapon.GetCurrentAmmo() < weapon.MaxAmmo)
+        {
             weapon.StartReload();
+        }
     }
 
     private void UpdateWeaponAiming(bool inputHeld)
@@ -73,7 +75,7 @@ public class PlayerWeaponsManager : MonoBehaviour
         GameObject newWeapon = Instantiate(weaponPrefab.gameObject, 
             DefaultWeaponPosition.position, WeaponParentSocket.rotation, WeaponParentSocket);
 
-        InventoryManager.Instance.AddItem(weapon.Item);
+        InventoryManager.Instance.AddItem(weapon.Item, 1);
         Destroy(weapon.gameObject);
 
         weapon = newWeapon.GetComponent<WeaponController>();

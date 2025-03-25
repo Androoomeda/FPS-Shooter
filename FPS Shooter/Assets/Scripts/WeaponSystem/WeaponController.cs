@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class WeaponController : MonoBehaviour
 {
+    public bool IsReloading {get; private set;}
     public Item Item;
     public int MaxAmmo = 8;
 
@@ -17,23 +18,27 @@ public class WeaponController : MonoBehaviour
 
     [Tooltip("Коэффицент зума во время прицеливания")] [Range(0f, 1f)]
     public float AimZoomRatio = 1f;
-    public GameObject Owner { get; set; }
+    public GameObject Owner;
     public int GetCurrentAmmo() => currentAmmo;
     public float GetRealoadingProgress() => (Time.time - lastTimeShot) / ReloadTime;
 
     private int currentAmmo;
-    private bool isReloading;
     private float lastTimeShot;
 
-    void Awake()
+    private bool isPlayerOwner;
+
+    void Start()
     {
         currentAmmo = MaxAmmo;
+
+        if(Owner)
+            isPlayerOwner = Owner.GetComponent<PlayerController>();
     }
 
     void Update()
     {
         if(currentAmmo == 0)
-            isReloading = true;
+            StartReload();
 
         Reload();
     }
@@ -46,18 +51,27 @@ public class WeaponController : MonoBehaviour
 
     public void StartReload()
     {
-        if (currentAmmo < MaxAmmo)
-        {
-            isReloading = true;
-        }
+        if(isPlayerOwner && InventoryManager.Instance.AmmoAmount <= 0)
+            return;
+
+        IsReloading = true;
     }
 
     private void Reload()
     {
-        if (isReloading && lastTimeShot + ReloadTime < Time.time)
+        if (IsReloading && lastTimeShot + ReloadTime < Time.time)
         {
-            currentAmmo = MaxAmmo;
-            isReloading = false;
+            if(isPlayerOwner)
+            {
+                int AmmoNeed = MaxAmmo - currentAmmo;
+                int ammoToTake = Math.Min(InventoryManager.Instance.AmmoAmount, AmmoNeed);
+
+                currentAmmo += ammoToTake;
+                InventoryManager.Instance.TakeAmmo(ammoToTake);    
+            }
+            else
+             currentAmmo = MaxAmmo;
+            IsReloading = false;
         }
     }
 
